@@ -1,7 +1,8 @@
 ###### Set Up and how to run:
 1. Make sure you installed Java and Maven and are able to run Java Maven project in your IDE e.g VSCode, IntelliJ
 2. To compile, run `javac -cp json-simple-1.1.1.jar modify.java` in the terminal
-3. To execute the class file, run `java -cp .;json-simple-1.1.1.jar modify jsonfiles\\mixtape.json jsonfiles\\changes.json jsonfiles\\output.json` in the terminal\
+3. If on powershell(window), run `java -cp ".;json-simple-1.1.1.jar" modify jsonfiles\\mixtape.json jsonfiles\\changes.json jsonfiles\\output.json` to execute the class file. \
+Else,  run `java -cp .;json-simple-1.1.1.jar modify jsonfiles\\mixtape.json jsonfiles\\changes.json jsonfiles\\output.json`\
     Note: If on a linux system, replace ';' with ':'
 
 
