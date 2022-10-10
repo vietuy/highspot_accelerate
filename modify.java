@@ -10,10 +10,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class modify {
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) throws IOException, ParseException {
     JSONParser jsonparser = new JSONParser();
-    Object changesobj = jsonparser.parse(new FileReader(".\\jsonfiles\\changes.json"));
-    Object mixtapeobj = jsonparser.parse(new FileReader(".\\jsonfiles\\mixtape.json"));
+    Object changesobj = jsonparser.parse(new FileReader(args[1]));
+    Object mixtapeobj = jsonparser.parse(new FileReader(args[0]));
 
     JSONArray changes = (JSONArray)changesobj;
     JSONObject mixtape = (JSONObject) mixtapeobj;
@@ -24,32 +25,39 @@ public class modify {
     //list of song object
     JSONArray songs = (JSONArray)mixtape.get("songs");
     List<Integer> removed_playlist_id = new ArrayList<>();
-    for(int i = 0; i < changes.size();i++) {
-      String type = (String)((JSONObject)changes.get(i)).get("type");
-      if(type.equals("add_song_to_playlist")) {
-        int playlistid = Integer.valueOf((String)((JSONObject)changes.get(i)).get("playlist_id"));
-        int addsong_id = Integer.valueOf((String)((JSONObject)changes.get(i)).get("song_id"));
-        JSONArray song_array = (JSONArray)((JSONObject)playlists.get(playlistid-1)).get("song_ids");
-        song_array.add(addsong_id+"");
-      } else if(type.equals("add_playlist")) {
-        JSONObject newplaylist = new JSONObject();
-        if(removed_playlist_id.size() != 0) {
-          newplaylist.put("id",removed_playlist_id.get(0)+"");
-        } else {
-          newplaylist.put("id", playlists.size()+1+"");
+    for (Object change : changes) {
+      String type = (String) ((JSONObject) change).get("type");
+      switch (type) {
+        case "add_song_to_playlist": {
+          int playlistid = Integer.parseInt((String) ((JSONObject) change).get("playlist_id"));
+          int addsong_id = Integer.parseInt((String) ((JSONObject) change).get("song_id"));
+          JSONArray song_array = (JSONArray) ((JSONObject) playlists.get(playlistid - 1))
+              .get("song_ids");
+          song_array.add(addsong_id + "");
+          break;
         }
-        newplaylist.put("owner_id",(String)((JSONObject)changes.get(i)).get("user_id"));
-        newplaylist.put("song_ids",((JSONObject)changes.get(i)).get("song_ids"));
-        playlists.add(newplaylist);
-      } else if(type.equals("remove_playlist")) {
-        String playlistid = (String)((JSONObject)changes.get(i)).get("playlist_id");
-        removed_playlist_id.add(Integer.valueOf(playlistid));
-        playlists.remove(Integer.valueOf(playlistid)-1);
+        case "add_playlist":
+          JSONObject newplaylist = new JSONObject();
+          if (removed_playlist_id.size() != 0) {
+            newplaylist.put("id", removed_playlist_id.get(0) + "");
+          } else {
+            newplaylist.put("id", playlists.size() + 1 + "");
+          }
+          newplaylist.put("owner_id", ((JSONObject) change).get("user_id"));
+          newplaylist.put("song_ids", ((JSONObject) change).get("song_ids"));
+          playlists.add(newplaylist);
+          break;
+        case "remove_playlist": {
+          String playlistid = (String) ((JSONObject) change).get("playlist_id");
+          removed_playlist_id.add(Integer.valueOf(playlistid));
+          playlists.remove(Integer.parseInt(playlistid) - 1);
+          break;
+        }
       }
 
     }
     // write results to output.json
-    try(FileWriter file = new FileWriter(".\\jsonfiles\\output.json")) {
+    try(FileWriter file = new FileWriter(args[2])) {
       JSONObject outputobj = new JSONObject();
       outputobj.put("users",users);
       outputobj.put("playlists",playlists);
@@ -110,8 +118,8 @@ public class modify {
 
   /**
    * Print a new line with indention at the beginning of the new line.
-   * @param indentLevel
-   * @param stringBuilder
+   *    @param indentLevel indent level
+   *    @param stringBuilder stirngbuilder
    */
   private static void appendIndentedNewLine(int indentLevel, StringBuilder stringBuilder) {
     stringBuilder.append("\n");

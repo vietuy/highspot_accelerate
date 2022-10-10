@@ -1,12 +1,13 @@
 ###### Set Up and how to run:
 1. Make sure you installed Java and Maven and are able to run Java Maven project in your IDE e.g VSCode, IntelliJ
-2. Run `mvn install` in the terminal to install dependencies
-3. Run the java file `modify.java` in `src/main/java`
+2. To compile, run `javac -cp json-simple-1.1.1.jar modify.java` in the terminal
+3. To execute the class file, run `java -cp .;json-simple-1.1.1.jar modify jsonfiles\\mixtape.json jsonfiles\\changes.json jsonfiles\\output.json` in the terminal\
+    Note: If on a linux system, replace ';' with ':'
 
 
 The application functionalities:\
 -It ingests `mixtape.json`.\
--It ingests a changes file(e.g `jsonfiles/changes.json`). The changes file includes multiple types of changes.\
+-It ingests a change file(e.g `jsonfiles/changes.json`). The changes file includes multiple types of changes.\
 -it outputs `output.json` in the same structure as `mixtape.json`, with the changes applied. 
 
 3 Type of changes:\
